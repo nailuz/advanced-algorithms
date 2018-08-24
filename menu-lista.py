@@ -8,7 +8,7 @@ def build_array(order):
 
 def print_array(graph):
     for row in graph:
-        print row
+        print(row)
 
 def insert_edge(graph, vertex_a, vertex_b):
     try:
@@ -21,7 +21,10 @@ def insert_edge(graph, vertex_a, vertex_b):
 
 def vertexes_adjacent(graph, vertex):
     try:
-        return graph[vertex - 1]
+        aux = []
+        for row in range(1, len(graph[vertex-1])):
+            aux.append(graph[vertex-1][row])
+        return aux
     except:
         return 'List index out of range'
 
@@ -38,31 +41,24 @@ def degree_vertex(graph, vertex):
     except:
         return 'List index out of range'
 
-def search_width(graph, vertex):
-    visited = [vertex]
-    results = str(vertex) + ' '
-    for row in graph[vertex - 1]:
-        if row != vertex:
-            visited.append(row)
-            results += str(row)
-    print results    
-    def deep(array):
-        aux = ' '
-        will_visit = []
-        for row in array:
-            for i in graph[row]:
-                for j in visited:
-                    if i != j:
-                        aux += str(i)
-                        visited.append(i)
-                        will_visit.append(i)
-        print aux
-        deep(will_visit)
-    deep(graph[vertex-1])
+    
+def breadth_search(array, vertex):
+    li = [vertex]
+    visited = []
+    while len(li):
+        visited.append(li[0])
+        aux = vertexes_adjacent(array, li.pop(0))
+        for i in aux:
+            if i not in visited and i not in li:
+                li.append(i)
+    return visited
+        
+    
+            
+            
 
 
-
-x = build_array(5)
+x = build_array(6)
 print_array(x)
 x = insert_edge(x, 1, 2)
 x = insert_edge(x, 1, 3)
@@ -71,8 +67,8 @@ x = insert_edge(x, 2, 4)
 x = insert_edge(x, 3, 4)
 print_array(x)
 x = insert_edge(x, 2, 3)
-print vertexes_adjacent(x, 3)
+print(vertexes_adjacent(x, 3))
 print_array(x)
-print check_edges_between(x, 3 , 1)
-print degree_vertex(x, 2)
-search_width(x, 4)
+print(check_edges_between(x, 3 , 1))
+print(degree_vertex(x, 2))
+print(fun(x,5))
