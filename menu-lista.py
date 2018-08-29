@@ -58,17 +58,19 @@ def breadth_search(array, vertex):
             
 
 
-x = build_array(6)
+x = build_array(7)
 print_array(x)
 x = insert_edge(x, 1, 2)
 x = insert_edge(x, 1, 3)
 x = insert_edge(x, 1, 5)
 x = insert_edge(x, 2, 4)
 x = insert_edge(x, 3, 4)
+x = insert_edge(x, 7, 5)
+x = insert_edge(x, 3, 6)
 print_array(x)
 x = insert_edge(x, 2, 3)
 print(vertexes_adjacent(x, 3))
 print_array(x)
 print(check_edges_between(x, 3 , 1))
 print(degree_vertex(x, 2))
-print(fun(x,5))
+print(breadth_search(x,7))
