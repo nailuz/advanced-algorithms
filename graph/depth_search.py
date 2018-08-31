@@ -35,20 +35,15 @@ def depth_search(graph, vertex):
     aux_visited = build_list(len(graph))
     result = []
     sequence = []
-    initial = vertex
     result.append(vertex)
     sequence.append(vertex)
-    adj = vertexes_adj(graph, sequence[-1])
-    while True:
-        if not sequence:
-            print('quebrei')
-            break
-        adj = vertexes_adj(graph, sequence[-1])
-        if adj[0] in graph[vertex][1:] and adj[0] not in aux_visited[vertex][1:]:
-            aux_visited[vertex].append(adj[0])
-            sequence.append(adj[0])
+    while len(sequence):
+        adj = [i for i in vertexes_adj(graph, sequence[-1]) if i not in set(vertexes_adj(aux_visited, sequence[-1]))]
+        if adj:
+            insert_adj(aux_visited, sequence[-1], adj[0])
+            aux_visited[sequence[-1]].append(adj[0])
             result.append(adj[0])
-            vertex = adj[0]
+            sequence.append(adj[0])
         else:
             del sequence[-1]
     return result
@@ -60,8 +55,8 @@ graph = build_list(9)
 insert_adj(graph, 0, 1)
 insert_adj(graph, 1, 2)
 insert_adj(graph, 2, 3)
-insert_adj(graph, 2, 6)
 insert_adj(graph, 2, 4)
+insert_adj(graph, 2, 6)
 insert_adj(graph, 6, 8)
 insert_adj(graph, 4, 5)
 insert_adj(graph, 5, 7)
