@@ -48,17 +48,33 @@ def depth_search(graph, vertex):
             del sequence[-1]
     return result
 
-
+def breadth_search(array, vertex):
+    li = [vertex]
+    visited = []
+    while len(li):
+        visited.append(li[0])
+        aux = vertexes_adj(array, li.pop(0))
+        for i in aux:
+            if i not in visited and i not in li:
+                li.append(i)
+    return visited
 
 #deploy
-graph = build_list(9)
+graph = build_list(15)
 insert_adj(graph, 0, 1)
-insert_adj(graph, 1, 2)
-insert_adj(graph, 2, 3)
-insert_adj(graph, 2, 4)
+insert_adj(graph, 0, 2)
+insert_adj(graph, 1, 3)
+insert_adj(graph, 1, 4)
+insert_adj(graph, 2, 5)
 insert_adj(graph, 2, 6)
-insert_adj(graph, 6, 8)
-insert_adj(graph, 4, 5)
-insert_adj(graph, 5, 7)
+insert_adj(graph, 3, 7)
+insert_adj(graph, 3, 8)
+insert_adj(graph, 4, 9)
+insert_adj(graph, 4, 10)
+insert_adj(graph, 5, 11)
+insert_adj(graph, 5, 12)
+insert_adj(graph, 6, 13)
+insert_adj(graph, 6, 14)
 print_graph(graph)
 print(depth_search(graph, 0))
+print(breadth_search(graph,0))
