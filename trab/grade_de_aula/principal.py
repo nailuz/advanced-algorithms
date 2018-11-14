@@ -10,11 +10,11 @@ MODELO DOS DADOS DO VERTICE DIAS DA SEMANA
     }
 }
 '''
-semana.append({"Nome": "Segunda",   "Dados": {"Aulas": [None, None, None, None], "ProfessoresDisponiveis": ["Eloiza", "Faulin", "Cesar"]}})
-semana.append({"Nome": "Terça",     "Dados": {"Aulas": [None, None, None, None], "ProfessoresDisponiveis": ["Ettore", "Victor"]}})
-semana.append({"Nome": "Quarta",    "Dados": {"Aulas": [None, None, None, None], "ProfessoresDisponiveis": ["Cesar", "Victor", "Ettore"]}})
-semana.append({"Nome": "Quinta",    "Dados": {"Aulas": [None, None, None, None], "ProfessoresDisponiveis": ["Victor", "Faulin"]}})
-semana.append({"Nome": "Sexta",     "Dados": {"Aulas": [None, None, None, None], "ProfessoresDisponiveis": ["Cleber", "Ettore"]}})
+semana.append({"Nome": "Segunda",   "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Eloiza", "Faulin", "Cesar"]}})
+semana.append({"Nome": "Terça",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Ettore", "Victor"]}})
+semana.append({"Nome": "Quarta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cesar", "Victor", "Ettore"]}})
+semana.append({"Nome": "Quinta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Victor", "Faulin"]}})
+semana.append({"Nome": "Sexta",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cleber", "Ettore"]}})
 
 #GERANDO OS VERTICES PROFESSORES
 professores = []
@@ -32,11 +32,11 @@ MODELO DOS DADOS DO VERTICE DOS PROFESSORES
 }
 '''
 professores.append({"Nome": "Eloiza",   "Dados": {"DaAulaDe": {"Ingles": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4]}}})
-professores.append({"Nome": "Faulin",   "Dados": {"DaAulaDe": {"Manejo": 2, "Empreendedorismo": 2}, "DiasDisponiveis": {"Segunda": [3,4], "Quinta": [1,2]}}})
+professores.append({"Nome": "Faulin",   "Dados": {"DaAulaDe": {"Manejo": 2}, "DiasDisponiveis": {"Segunda": [3,4], "Quinta": [1,2]}}})
 professores.append({"Nome": "Ettore",   "Dados": {"DaAulaDe": {"Redes": 4}, "DiasDisponiveis": {"Terça": [1,2,3,4], "Quarta": [1,2], "Sexta": [3,4]}}})
-professores.append({"Nome": "Cesar",    "Dados": {"DaAulaDe": {"Empreendedorismo": 2, "Ingles": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4], "Quarta": [1,2]}}})
+professores.append({"Nome": "Cesar",    "Dados": {"DaAulaDe": {"Empreendedorismo": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4], "Quarta": [1,2]}}})
 professores.append({"Nome": "Victor",   "Dados": {"DaAulaDe": {"Algoritmos": 6}, "DiasDisponiveis": {"Terça": [1,2,3,4], "Quarta": [1,2,3,4], "Quinta": [1,2,3,4]}}})
-professores.append({"Nome": "Cleber",   "Dados": {"DaAulaDe": {"WebSemantica": 4, "Empreendedorismo": 2}, "DiasDisponiveis": {"Sexta": [1,2,3,4]}}})
+professores.append({"Nome": "Cleber",   "Dados": {"DaAulaDe": {"WebSemantica": 4}, "DiasDisponiveis": {"Sexta": [1,2,3,4]}}})
 
 #GERANDO OS VERTICES MATERIAS
 materias = []
@@ -49,11 +49,11 @@ materias = []
     }
 }
 '''
-materias.append({"Nome": "Ingles",              "Dados": {"ProfessoresDisponiveis": ["Eloiza", "Cesar"], "NumeroDeAulas": 2}})
+materias.append({"Nome": "Ingles",              "Dados": {"ProfessoresDisponiveis": ["Eloiza"], "NumeroDeAulas": 2}})
 materias.append({"Nome": "Manejo",              "Dados": {"ProfessoresDisponiveis": ["Faulin"], "NumeroDeAulas": 2}})
 materias.append({"Nome": "Redes",               "Dados": {"ProfessoresDisponiveis": ["Ettore"], "NumeroDeAulas": 4}})
 materias.append({"Nome": "Algoritmos",          "Dados": {"ProfessoresDisponiveis": ["Victor"], "NumeroDeAulas": 6}})
-materias.append({"Nome": "Empreendedorismo",    "Dados": {"ProfessoresDisponiveis": ["Cesar", "Faulin", "Cleber"], "NumeroDeAulas": 2}})
+materias.append({"Nome": "Empreendedorismo",    "Dados": {"ProfessoresDisponiveis": ["Cesar"], "NumeroDeAulas": 2}})
 materias.append({"Nome": "WebSemantica",        "Dados": {"ProfessoresDisponiveis": ["Cleber"], "NumeroDeAulas": 4}})
 
 def busca_professor(professor):
@@ -68,6 +68,18 @@ def busca_dia(dia):
 def busca_materia(materia):
     res = [mat for mat in materias if mat['Nome'] is materia]
     return res.pop()
+
+def agendar_aula(dia, profs):
+    diaAux = busca_dia(dia)
+    for i in profs:
+        matAux = melhor_materia_do_professor(i['Nome'])
+        for j in range(matAux['Dados']['NumeroDeAulas']):
+            if len(diaAux['Dados']['Aulas']) >= 4:
+                break
+            diaAux['Dados']['Aulas'].append(matAux['Nome'])
+            matAux['Dados']['NumeroDeAulas'] -= 1
+        # del i['Dados']['DaAulaDe'][matAux['Nome']]
+        # diaAux['Dados']['ProfessoresDisponiveis'].remove(i['Nome'])
 
 def professores_disponiveis_no_dia(dia):
     res = []
@@ -103,22 +115,40 @@ def melhor_materia_do_professor(professor):
 def melhor_professor_no_dia(dia):
     day = busca_dia(dia)
     possivel_professor = []
-    res = {}
     for row in day['Dados']['ProfessoresDisponiveis']:
         profAux = busca_professor(row)
         try:
-            if len(possivel_professor[0]['Dados']['DiasDisponiveis']) > len(profAux['Dados']['DiasDisponiveis']):
-                materiaAux = melhor_materia_do_professor(profAux['Nome'])
+            print(len(possivel_professor[0]['Dados']['DiasDisponiveis']), len(profAux['Dados']['DiasDisponiveis']))
+            if len(possivel_professor[0]['Dados']['DiasDisponiveis']) <= len(profAux['Dados']['DiasDisponiveis']):
+                print(profAux['Nome'])
+                possivel_professor.append(profAux)
         except:
-            possivel_professor.insert(0, profAux)
+            possivel_professor.append(profAux)
+    return possivel_professor
+
+
 
 
 def montar_grade():
     for dias in semana:
-        print('oi')
+        profs = melhor_professor_no_dia(dias['Nome'])
+        contador = 0
+        aux = []
+        for i in profs:
+            matAux = melhor_materia_do_professor(i['Nome'])
+            if contador >= 4:
+                break
+            contador += matAux['Dados']['NumeroDeAulas']
+            aux.append(i)
+        agendar_aula(dias['Nome'], aux)
+    print(semana)
 
 
 #print(professores_disponiveis("Segunda"))
 
 #print(professores_disponiveis_no_dia('Segunda'))
-print(melhor_materia_do_professor('Victor'))
+#print(melhor_materia_do_professor('Victor'))
+#print(melhor_professor_no_dia('Terça'))
+
+montar_grade()
+#print(melhor_materia_do_professor(professores[0]['Nome']))
