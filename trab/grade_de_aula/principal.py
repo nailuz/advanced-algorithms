@@ -81,21 +81,21 @@ def agendar_aula(dia, profs):
         # del i['Dados']['DaAulaDe'][matAux['Nome']]
         # diaAux['Dados']['ProfessoresDisponiveis'].remove(i['Nome'])
 
-def professores_disponiveis_no_dia(dia):
-    res = []
-    for day in semana:
-        if day['Nome'] == dia:
-            for row in day['Dados']['ProfessoresDisponiveis']:
-                res.append(busca_professor(row))
-    return res
+# def professores_disponiveis_no_dia(dia):
+#     res = []
+#     for day in semana:
+#         if day['Nome'] == dia:
+#             for row in day['Dados']['ProfessoresDisponiveis']:
+#                 res.append(busca_professor(row))
+#     return res
 
-def dias_disponiveis_do_professor(professor):
-    res = []
-    for prof in professores:
-        if prof['Nome'] == professor:
-            for row in prof['Dados']['DiasDisponiveis']:
-                res.append(busca_dia(row))
-    return res
+# def dias_disponiveis_do_professor(professor):
+#     res = []
+#     for prof in professores:
+#         if prof['Nome'] == professor:
+#             for row in prof['Dados']['DiasDisponiveis']:
+#                 res.append(busca_dia(row))
+#     return res
 
 def melhor_materia_do_professor(professor):
     profAux = busca_professor(professor)
