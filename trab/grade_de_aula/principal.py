@@ -131,16 +131,16 @@ def melhor_professor_no_dia(dia):
 
 def montar_grade():
     for dias in semana:
-        profs = melhor_professor_no_dia(dias['Nome'])
+        profsDisponiveis = melhor_professor_no_dia(dias['Nome'])
         contador = 0
-        aux = []
-        for i in profs:
-            matAux = melhor_materia_do_professor(i['Nome'])
+        profsEscolhidos = []
+        for i in profsDisponiveis:
+            matAjudante = melhor_materia_do_professor(i['Nome'])
             if contador >= 4:
                 break
-            contador += matAux['Dados']['NumeroDeAulas']
-            aux.append(i)
-        agendar_aula(dias['Nome'], aux)
+            contador += matAjudante['Dados']['NumeroDeAulas']
+            profsEscolhidos.append(i)
+        agendar_aula(dias['Nome'], profsEscolhidos)
     print(semana)
 
 
