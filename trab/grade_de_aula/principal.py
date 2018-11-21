@@ -10,7 +10,7 @@ MODELO DOS DADOS DO VERTICE DIAS DA SEMANA
     }
 }
 '''
-semana.append({"Nome": "Segunda",   "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Eloiza", "Faulin", "Cesar"]}})
+semana.append({"Nome": "Segunda",   "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Faulin", "Cesar","Eloiza"]}})
 semana.append({"Nome": "Terça",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Ettore", "Victor"]}})
 semana.append({"Nome": "Quarta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cesar", "Victor", "Ettore"]}})
 semana.append({"Nome": "Quinta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Victor", "Faulin"]}})
@@ -70,14 +70,14 @@ def busca_materia(materia):
     return res.pop()
 
 def agendar_aula(dia, profs):
-    diaAux = busca_dia(dia)
+    objDiaDaSemana = busca_dia(dia)
     for i in profs:
-        matAux = melhor_materia_do_professor(i['Nome'])
-        for j in range(matAux['Dados']['NumeroDeAulas']):
-            if len(diaAux['Dados']['Aulas']) >= 4:
+        objMateria = melhor_materia_do_professor(i['Nome'])
+        for j in range(objMateria['Dados']['NumeroDeAulas']):
+            if len(objDiaDaSemana['Dados']['Aulas']) >= 4:
                 break
-            diaAux['Dados']['Aulas'].append(matAux['Nome'])
-            matAux['Dados']['NumeroDeAulas'] -= 1
+            objDiaDaSemana['Dados']['Aulas'].append(objMateria['Nome'])
+            objMateria['Dados']['NumeroDeAulas'] -= 1
         # del i['Dados']['DaAulaDe'][matAux['Nome']]
         # diaAux['Dados']['ProfessoresDisponiveis'].remove(i['Nome'])
 
@@ -113,34 +113,35 @@ def melhor_materia_do_professor(professor):
     return res.pop()
 
 def melhor_professor_no_dia(dia):
-    day = busca_dia(dia)
-    possivel_professor = []
-    for row in day['Dados']['ProfessoresDisponiveis']:
-        profAux = busca_professor(row)
+    objDiaDaSemana = busca_dia(dia)
+    professoresEscolhidos = []
+    for dia in objDiaDaSemana['Dados']['ProfessoresDisponiveis']:
+        objProfessor = busca_professor(dia)
         try:
-            print(len(possivel_professor[0]['Dados']['DiasDisponiveis']), len(profAux['Dados']['DiasDisponiveis']))
-            if len(possivel_professor[0]['Dados']['DiasDisponiveis']) <= len(profAux['Dados']['DiasDisponiveis']):
-                print(profAux['Nome'])
-                possivel_professor.append(profAux)
+            if len(professoresEscolhidos[0]['Dados']['DiasDisponiveis']) <= len(objProfessor['Dados']['DiasDisponiveis']):
+                professoresEscolhidos.append(objProfessor)
+            
         except:
-            possivel_professor.append(profAux)
-    return possivel_professor
+            professoresEscolhidos.append(objProfessor)
+    return professoresEscolhidos
 
 
 
 
 def montar_grade():
     for dias in semana:
-        profsDisponiveis = melhor_professor_no_dia(dias['Nome'])
+        
+        professoresDisponiveis = melhor_professor_no_dia(dias['Nome'])
         contador = 0
-        profsEscolhidos = []
-        for i in profsDisponiveis:
-            matAjudante = melhor_materia_do_professor(i['Nome'])
+        professoresEscolhidos = []
+        for professor in professoresDisponiveis:
+            objMateria = melhor_materia_do_professor(professor['Nome'])
             if contador >= 4:
                 break
-            contador += matAjudante['Dados']['NumeroDeAulas']
-            profsEscolhidos.append(i)
-        agendar_aula(dias['Nome'], profsEscolhidos)
+            contador += objMateria['Dados']['NumeroDeAulas']
+            professoresEscolhidos.append(professor)
+        agendar_aula(dias['Nome'], professoresEscolhidos)
+
     print(semana)
 
 
