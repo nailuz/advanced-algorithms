@@ -112,35 +112,33 @@ def melhor_materia_do_professor(professor):
             res.insert(0, materiaAux)
     return res.pop()
 
-def melhor_professor_no_dia(dia):
-    objDiaDaSemana = busca_dia(dia)
-    professoresEscolhidos = []
-    for dia in objDiaDaSemana['Dados']['ProfessoresDisponiveis']:
-        objProfessor = busca_professor(dia)
-        try:
-            if len(professoresEscolhidos[0]['Dados']['DiasDisponiveis']) <= len(objProfessor['Dados']['DiasDisponiveis']):
-                professoresEscolhidos.append(objProfessor)
-            
-        except:
-            professoresEscolhidos.append(objProfessor)
-    return professoresEscolhidos
+def buscar_professores_do_dia(_nome_dia):
+    dia = busca_dia(_nome_dia)
+    professores_disponiveis = []
 
+    # Separa array de professores
+    for nome_professor in dia['Dados']['ProfessoresDisponiveis']:
+        professores_disponiveis.append(busca_professor(nome_professor))
+    
+    # Ordena professores do dia por quem tem menor disponibilidade e seleciona até que preencha as 4 aulas
+    qtde_aulas = 0
+    professores_escolhidos = []
 
+    for professor in sorted(professores_disponiveis, key=lambda k: len(k['Dados']['DiasDisponiveis'])):
+        materia = melhor_materia_do_professor(professor['Nome'])
+        
+        if qtde_aulas < 4:
+            professores_escolhidos.append(professor)
 
+        qtde_aulas += materia['Dados']['NumeroDeAulas']
+        
+    return professores_escolhidos
 
 def montar_grade():
-    for dias in semana:
+    for dia in semana:
         
-        professoresDisponiveis = melhor_professor_no_dia(dias['Nome'])
-        contador = 0
-        professoresEscolhidos = []
-        for professor in professoresDisponiveis:
-            objMateria = melhor_materia_do_professor(professor['Nome'])
-            if contador >= 4:
-                break
-            contador += objMateria['Dados']['NumeroDeAulas']
-            professoresEscolhidos.append(professor)
-        agendar_aula(dias['Nome'], professoresEscolhidos)
+        professores_escolhidos = buscar_professores_do_dia(dia['Nome'])            
+        agendar_aula(dia['Nome'], professores_escolhidos)
 
     print(semana)
 
