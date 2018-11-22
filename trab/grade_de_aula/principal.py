@@ -171,8 +171,13 @@ def busca_em_largura_do_dia(dia_inicial):
 
         dias_nao_visitados.pop(0)
 
-        for nome_prof in dia['Dados']['ProfessoresDisponiveis']:
-            prof = busca_professor(nome_prof)
+        # Pega um array de objetos de professor, só pra ordenar
+        professores_disponiveis = []
+        for nome_professor in dia['Dados']['ProfessoresDisponiveis']:
+            professores_disponiveis.append(busca_professor(nome_professor))
+
+        # Considera buscar os adjacentes do professor com a mesma ordem de critério
+        for prof in sorted(professores_disponiveis, key=lambda k: len(k['Dados']['DiasDisponiveis'])):
             dias_adjacentes = prof['Dados']['DiasDisponiveis'] # vai dar erro aqui
             # dias_adjacentes = buscar_dias_adjacentes_ao_prof(prof) # Retorna vértices adjacentes, remove da lista de busca
         
@@ -203,12 +208,12 @@ def valida_resultado():
 
     for dia in semana:
         if (len(dia['Dados']['Aulas']) < 4):
-            gaps.append(dia['Nome'])
+            gaps.append(dia)
             resultado = False
 
     for materia in materias:
         if (materia['Dados']['NumeroDeAulas'] > 0):
-            gaps.append(materia['Nome'])
+            gaps.append(materia)
             resultado = False
 
     return resultado
@@ -216,17 +221,19 @@ def valida_resultado():
 def montar_grade():
 
     for dia in semana:
-        quinta = busca_dia('Quinta')
-        busca_em_largura_do_dia(quinta)
+        busca_em_largura_do_dia(dia)
 
         if valida_resultado():
             print(semana)
             break
 
+        if len(gaps):
+            print('GAPS (' + str(dia["Nome"]) + ')\n')
+            print(gaps)
+
         limpa_grafo_inicial()
 
-    if len(gaps):
-        print(gaps)
+
 
 
 #print(professores_disponiveis("Segunda"))
