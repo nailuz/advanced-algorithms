@@ -12,14 +12,12 @@ MODELO DOS DADOS DO VERTICE DIAS DA SEMANA
     }
 }
 '''
-
-
 def define_semana():
     semana.append({"Nome": "Segunda",   "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Faulin", "Cesar","Eloiza"]}})
     semana.append({"Nome": "Terca",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Ettore", "Victor"]}})
     semana.append({"Nome": "Quarta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cesar", "Victor", "Ettore"]}})
     semana.append({"Nome": "Quinta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Victor", "Faulin"]}})
-    semana.append({"Nome": "Sexta",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cleber"]}})
+    semana.append({"Nome": "Sexta",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cleber", "Ettore"]}})
 
 define_semana()
 
@@ -41,7 +39,7 @@ MODELO DOS DADOS DO VERTICE DOS PROFESSORES
 def define_professores():
     professores.append({"Nome": "Eloiza",   "Dados": {"DaAulaDe": {"Ingles": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4]}}})
     professores.append({"Nome": "Faulin",   "Dados": {"DaAulaDe": {"Manejo": 2}, "DiasDisponiveis": {"Segunda": [3,4], "Quinta": [1,2]}}})
-    professores.append({"Nome": "Ettore",   "Dados": {"DaAulaDe": {"Redes": 4}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2]}}})
+    professores.append({"Nome": "Ettore",   "Dados": {"DaAulaDe": {"Redes": 4}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2], "Sexta": [3,4]}}})
     professores.append({"Nome": "Cesar",    "Dados": {"DaAulaDe": {"Empreendedorismo": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4], "Quarta": [1,2]}}})
     professores.append({"Nome": "Victor",   "Dados": {"DaAulaDe": {"Algoritmos": 6}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2,3,4], "Quinta": [1,2,3,4]}}})
     professores.append({"Nome": "Cleber",   "Dados": {"DaAulaDe": {"WebSemantica": 4}, "DiasDisponiveis": {"Sexta": [1,2,3,4]}}})
@@ -188,25 +186,29 @@ def busca_em_largura_do_dia(dia_inicial):
 
 def limpa_grafo_inicial():
     
-    dias_visitados = []
+    del dias_visitados[:]
+    del semana[:]
     define_semana()
+    del professores[:]
     define_professores()
+    del materias[:]
     define_materias()
 
 gaps = []
 
 def valida_resultado():
 
+    del gaps[:]
     resultado = True
 
     for dia in semana:
         if (len(dia['Dados']['Aulas']) < 4):
-            gaps.append(dia)
+            gaps.append(dia['Nome'])
             resultado = False
 
     for materia in materias:
         if (materia['Dados']['NumeroDeAulas'] > 0):
-            gaps.append(materia)
+            gaps.append(materia['Nome'])
             resultado = False
 
     return resultado
@@ -214,7 +216,8 @@ def valida_resultado():
 def montar_grade():
 
     for dia in semana:
-        busca_em_largura_do_dia(dia)
+        quinta = busca_dia('Quinta')
+        busca_em_largura_do_dia(quinta)
 
         if valida_resultado():
             print(semana)
