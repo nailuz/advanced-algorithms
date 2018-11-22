@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 #GERANDO OS VERTICES DIAS DA SEMANA
 semana = []
 '''
@@ -11,7 +13,7 @@ MODELO DOS DADOS DO VERTICE DIAS DA SEMANA
 }
 '''
 semana.append({"Nome": "Segunda",   "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Faulin", "Cesar","Eloiza"]}})
-semana.append({"Nome": "Terça",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Ettore", "Victor"]}})
+semana.append({"Nome": "Terca",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Ettore", "Victor"]}})
 semana.append({"Nome": "Quarta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cesar", "Victor", "Ettore"]}})
 semana.append({"Nome": "Quinta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Victor", "Faulin"]}})
 semana.append({"Nome": "Sexta",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cleber", "Ettore"]}})
@@ -33,9 +35,9 @@ MODELO DOS DADOS DO VERTICE DOS PROFESSORES
 '''
 professores.append({"Nome": "Eloiza",   "Dados": {"DaAulaDe": {"Ingles": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4]}}})
 professores.append({"Nome": "Faulin",   "Dados": {"DaAulaDe": {"Manejo": 2}, "DiasDisponiveis": {"Segunda": [3,4], "Quinta": [1,2]}}})
-professores.append({"Nome": "Ettore",   "Dados": {"DaAulaDe": {"Redes": 4}, "DiasDisponiveis": {"Terça": [1,2,3,4], "Quarta": [1,2], "Sexta": [3,4]}}})
+professores.append({"Nome": "Ettore",   "Dados": {"DaAulaDe": {"Redes": 4}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2], "Sexta": [3,4]}}})
 professores.append({"Nome": "Cesar",    "Dados": {"DaAulaDe": {"Empreendedorismo": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4], "Quarta": [1,2]}}})
-professores.append({"Nome": "Victor",   "Dados": {"DaAulaDe": {"Algoritmos": 6}, "DiasDisponiveis": {"Terça": [1,2,3,4], "Quarta": [1,2,3,4], "Quinta": [1,2,3,4]}}})
+professores.append({"Nome": "Victor",   "Dados": {"DaAulaDe": {"Algoritmos": 6}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2,3,4], "Quinta": [1,2,3,4]}}})
 professores.append({"Nome": "Cleber",   "Dados": {"DaAulaDe": {"WebSemantica": 4}, "DiasDisponiveis": {"Sexta": [1,2,3,4]}}})
 
 #GERANDO OS VERTICES MATERIAS
@@ -134,12 +136,42 @@ def buscar_professores_do_dia(_nome_dia):
         
     return professores_escolhidos
 
-def montar_grade():
-    for dia in semana:
-        
-        professores_escolhidos = buscar_professores_do_dia(dia['Nome'])            
-        agendar_aula(dia['Nome'], professores_escolhidos)
+# def buscar_dias_adjacentes_ao_prof(prof):
+#     return []
 
+def busca_em_largura_do_dia(dia_inicial):
+    dias_nao_visitados = [dia_inicial['Nome']]
+    dias_visitados = []
+    
+    while len(dias_nao_visitados):
+
+        dias_visitados.append(dias_nao_visitados[0]) # Adiciona dia aos visitados
+        professores_escolhidos = buscar_professores_do_dia(u''+dias_nao_visitados[0])
+        agendar_aula(dias_nao_visitados[0], professores_escolhidos)
+
+        dia = busca_dia(dias_nao_visitados[0])
+
+        dias_nao_visitados.pop(0)
+
+        for nome_prof in dia['Dados']['ProfessoresDisponiveis']:
+            prof = busca_professor(nome_prof)
+            dias_adjacentes = prof['Dados']['DiasDisponiveis'] # vai dar erro aqui
+            # dias_adjacentes = buscar_dias_adjacentes_ao_prof(prof) # Retorna vértices adjacentes, remove da lista de busca
+        
+            for prox_dia in dias_adjacentes:
+                if prox_dia not in dias_visitados and prox_dia not in dias_nao_visitados: # Para cada adjacente não visitado, acrescenta na lista
+                    dias_nao_visitados.append(prox_dia)
+
+    return dias_visitados
+
+def montar_grade():
+
+    for dia in semana:
+
+        busca_em_largura_do_dia(dia)
+
+    # busca_em_largura_do_dia('Sexta')
+        
     print(semana)
 
 
@@ -147,7 +179,7 @@ def montar_grade():
 
 #print(professores_disponiveis_no_dia('Segunda'))
 #print(melhor_materia_do_professor('Victor'))
-#print(melhor_professor_no_dia('Terça'))
+#print(melhor_professor_no_dia('Terca'))
 
 montar_grade()
 #print(melhor_materia_do_professor(professores[0]['Nome']))

@@ -46,10 +46,10 @@ def breadth_search(array, vertex):
     li = [vertex]
     visited = []
     while len(li):
-        visited.append(li[0])
-        aux = vertexes_adjacent(array, li.pop(0))
+        visited.append(li[0]) # Adiciona vértice inical aos visitados
+        aux = vertexes_adjacent(array, li.pop(0)) # Retorna vértices adjacentes, remove da lista de busca
         for i in aux:
-            if i not in visited and i not in li:
+            if i not in visited and i not in li: # Para cada adjacente não visitado, acrescenta na lista
                 li.append(i)
     return visited
         
