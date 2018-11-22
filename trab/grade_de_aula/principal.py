@@ -19,7 +19,7 @@ def define_semana():
     semana.append({"Nome": "Terca",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Ettore", "Victor"]}})
     semana.append({"Nome": "Quarta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cesar", "Victor", "Ettore"]}})
     semana.append({"Nome": "Quinta",    "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Victor", "Faulin"]}})
-    semana.append({"Nome": "Sexta",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cleber", "Ettore"]}})
+    semana.append({"Nome": "Sexta",     "Dados": {"Aulas": [], "ProfessoresDisponiveis": ["Cleber"]}})
 
 define_semana()
 
@@ -41,7 +41,7 @@ MODELO DOS DADOS DO VERTICE DOS PROFESSORES
 def define_professores():
     professores.append({"Nome": "Eloiza",   "Dados": {"DaAulaDe": {"Ingles": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4]}}})
     professores.append({"Nome": "Faulin",   "Dados": {"DaAulaDe": {"Manejo": 2}, "DiasDisponiveis": {"Segunda": [3,4], "Quinta": [1,2]}}})
-    professores.append({"Nome": "Ettore",   "Dados": {"DaAulaDe": {"Redes": 4}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2], "Sexta": [3,4]}}})
+    professores.append({"Nome": "Ettore",   "Dados": {"DaAulaDe": {"Redes": 4}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2]}}})
     professores.append({"Nome": "Cesar",    "Dados": {"DaAulaDe": {"Empreendedorismo": 2}, "DiasDisponiveis": {"Segunda": [1,2,3,4], "Quarta": [1,2]}}})
     professores.append({"Nome": "Victor",   "Dados": {"DaAulaDe": {"Algoritmos": 6}, "DiasDisponiveis": {"Terca": [1,2,3,4], "Quarta": [1,2,3,4], "Quinta": [1,2,3,4]}}})
     professores.append({"Nome": "Cleber",   "Dados": {"DaAulaDe": {"WebSemantica": 4}, "DiasDisponiveis": {"Sexta": [1,2,3,4]}}})
@@ -150,9 +150,18 @@ def buscar_professores_do_dia(_nome_dia):
 # def buscar_dias_adjacentes_ao_prof(prof):
 #     return []
 
+dias_visitados = []
+
+def pega_um_dia_nao_visitado_de_grafo_desconexo():
+    
+    for dia in semana:
+        if dia['Nome'] not in dias_visitados:
+            return dia
+    
+    return False
+
 def busca_em_largura_do_dia(dia_inicial):
     dias_nao_visitados = [dia_inicial['Nome']]
-    dias_visitados = []
     
     while len(dias_nao_visitados):
 
@@ -173,10 +182,13 @@ def busca_em_largura_do_dia(dia_inicial):
                 if prox_dia not in dias_visitados and prox_dia not in dias_nao_visitados: # Para cada adjacente não visitado, acrescenta na lista
                     dias_nao_visitados.append(prox_dia)
 
-    return dias_visitados
+    dia_desconexo = pega_um_dia_nao_visitado_de_grafo_desconexo()
+    if dia_desconexo:
+        busca_em_largura_do_dia(dia_desconexo)
 
 def limpa_grafo_inicial():
     
+    dias_visitados = []
     define_semana()
     define_professores()
     define_materias()
@@ -207,7 +219,7 @@ def montar_grade():
         if valida_resultado():
             print(semana)
             break
-            
+
         limpa_grafo_inicial()
 
     if len(gaps):
